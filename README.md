@@ -95,7 +95,11 @@ Avoid running competing gearbox or handling controllers on the same vehicle. Use
 
 Version 0.3.0 passed **286 automated tests with simulated FiveM natives**, plus HUD browser checks at three resolutions. No fresh in-game driving or live ESX/QBCore integration test was performed for this release. Complete the [in-game acceptance checklist](docs/VALIDATION.md) on your server before deployment.
 
-[Release notes](docs/CHANGELOG.md) · [Third-party notices and license status](docs/THIRD-PARTY-NOTICES.md)
+### License
+
+The [DailyMok Free Use and No Resale License](LICENSE) permits use, modification and **free redistribution**, including use on monetized FiveM servers (VIP, donations and shops). **Selling the mod, a modified version or a paid pack containing it is prohibited.** Keep the copyright, license and third-party notices when sharing it. This is a custom source-available license, not MIT.
+
+[Release notes](docs/CHANGELOG.md) · [Third-party notices](docs/THIRD-PARTY-NOTICES.md)
 
 ---
 
@@ -190,4 +194,8 @@ Aucun enregistrement de passage de rapport n'est fourni. Les sons de passage fac
 
 La version 0.3.0 a passé **286 tests automatiques avec des natives FiveM simulées**, ainsi que des vérifications du HUD en navigateur à trois résolutions. Aucun nouvel essai de conduite en jeu ni d'intégration ESX/QBCore réelle n'a été effectué pour cette version. Suivre la [fiche de validation en jeu](docs/VALIDATION.md) sur votre serveur avant la mise en service.
 
-[Notes de version](docs/CHANGELOG.md) · [Provenance des éléments tiers et statut de licence](docs/THIRD-PARTY-NOTICES.md) · [README français séparé](README.fr.md)
+### Licence
+
+La [licence DailyMok Free Use and No Resale](LICENSE) autorise l'utilisation, la modification et le **partage gratuit**, y compris sur des serveurs FiveM monétisés (VIP, dons et boutiques). **La vente du mod, d'une version modifiée ou d'un pack payant qui le contient est interdite.** Conserver les mentions d'auteur, la licence et les mentions des éléments tiers lors du partage. Il s'agit d'une licence personnalisée avec code consultable, pas d'une licence MIT. Le texte anglais du fichier LICENSE fait foi.
+
+[Notes de version](docs/CHANGELOG.md) · [Provenance des éléments tiers](docs/THIRD-PARTY-NOTICES.md) · [README français séparé](README.fr.md)

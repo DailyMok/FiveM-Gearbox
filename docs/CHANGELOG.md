@@ -2,6 +2,8 @@
 
 ## 0.3.0
 
+License/documentation update: the original DailyMok code and documentation are now covered by the [Free Use and No Resale License](../LICENSE). Monetized servers are permitted; resale and paid redistribution of the mod are prohibited. The installable ZIP has been refreshed to include the license and updated documentation. The game scripts and original `v0.3.0` source tag are unchanged; the refreshed ZIP has a new SHA-256 checksum.
+
 - Simplified administrator entry points: general settings, optional model exceptions, and private server permissions.
 - English configuration comments and documentation, plus a French README.
 - EN/FR player-facing labels selected with `locale`; English by default.

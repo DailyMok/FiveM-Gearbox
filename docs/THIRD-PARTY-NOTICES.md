@@ -20,4 +20,6 @@ No permission to reuse third-party recordings is created by this documentation. 
 
 ## Project license
 
-This package does not invent or apply an MIT, GPL, Creative Commons or other blanket license to existing project code or third-party material. No standalone project license has been selected in the supplied source. A distribution license can be added by the project owner; these attribution notes are not themselves a license grant.
+The original code and documentation owned by DailyMok are licensed under the [DailyMok Free Use and No Resale License 1.0](../LICENSE), including version 0.3.0. Use, modification and free redistribution are permitted, including operation on monetized FiveM servers. Selling the mod, modified versions, substantial portions or paid packs containing them is prohibited. Copyright and license notices must be retained.
+
+This is a custom source-available license, not MIT or an OSI-approved open-source license. It grants no additional rights over third-party code, datasets, Rockstar/FiveM assets, trademarks or the excluded audio recordings. The provenance notices above remain applicable. The English LICENSE file contains the governing terms; README summaries do not replace it.

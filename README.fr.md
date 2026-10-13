@@ -79,4 +79,8 @@ Les tests automatiques utilisent des natives simulées. Ils ne remplacent pas un
 
 Pour éviter les conflits avec une autre boîte, utiliser les exclusions par modèle ou les [exports d'intégration](docs/INTEGRATION.md). La [fiche de validation](docs/VALIDATION.md) détaille les limites et les essais attendus.
 
+## Licence
+
+La [licence DailyMok Free Use and No Resale](LICENSE) autorise l'utilisation, la modification et le **partage gratuit**, y compris sur des serveurs FiveM monétisés (VIP, dons et boutiques). **La vente du mod, d'une version modifiée ou d'un pack payant qui le contient est interdite.** Conserver les mentions d'auteur, la licence et les mentions des éléments tiers. Le texte anglais du fichier LICENSE fait foi ; ce résumé ne le remplace pas.
+
 [Notes de version](docs/CHANGELOG.md) · [Provenance des éléments tiers](docs/THIRD-PARTY-NOTICES.md)
