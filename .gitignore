@@ -1,0 +1,12 @@
+# Local editor and operating-system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local secrets, dependencies and development output
+.env
+.env.*
+node_modules/
+*.log
+host-config.js
