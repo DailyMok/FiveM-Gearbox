@@ -25,8 +25,8 @@ An independent automatic and sequential gearbox for FiveM, with native engine au
 ### Installation
 
 1. Use an up-to-date FXServer with **OneSync enabled**.
-2. On this repository, select **Code → Download ZIP** and extract it.
-3. Rename the extracted `FiveM-Gearbox-main` folder to **`standalone_gearbox`**.
+2. Download **`standalone_gearbox-0.3.0.zip`** from the [v0.3.0 release](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.0).
+3. Extract the ready-to-install **`standalone_gearbox`** folder. If using **Code → Download ZIP** instead, rename `FiveM-Gearbox-main` to `standalone_gearbox`.
 4. Place it in `resources/[standalone]/standalone_gearbox`. The `fxmanifest.lua` file must be directly inside that folder.
 5. Add this to `server.cfg`:
 
@@ -120,8 +120,8 @@ Une boîte de vitesses automatique et séquentielle autonome pour FiveM, avec au
 ### Installation
 
 1. Utiliser un FXServer à jour avec **OneSync activé**.
-2. Sur ce dépôt, choisir **Code → Download ZIP**, puis extraire l'archive.
-3. Renommer le dossier extrait `FiveM-Gearbox-main` en **`standalone_gearbox`**.
+2. Télécharger **`standalone_gearbox-0.3.0.zip`** depuis la [release v0.3.0](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.0).
+3. Extraire le dossier **`standalone_gearbox`**, prêt à installer. Si vous utilisez plutôt **Code → Download ZIP**, renommer `FiveM-Gearbox-main` en `standalone_gearbox`.
 4. Le placer dans `resources/[standalone]/standalone_gearbox`. Le fichier `fxmanifest.lua` doit se trouver directement dans ce dossier.
 5. Ajouter dans `server.cfg` :
 

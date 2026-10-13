@@ -6,7 +6,7 @@ Boîte de vitesses automatique/séquentielle autonome pour FiveM, avec HUD facul
 
 ## Installation
 
-1. Télécharger le dépôt avec **Code → Download ZIP**, extraire `FiveM-Gearbox-main`, puis renommer ce dossier en `standalone_gearbox`. Copier ce dossier dans les ressources du serveur, par exemple `resources/[standalone]/standalone_gearbox`.
+1. Télécharger **`standalone_gearbox-0.3.0.zip`** depuis la [release v0.3.0](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.0), puis extraire son dossier `standalone_gearbox`. Copier ce dossier dans les ressources du serveur, par exemple `resources/[standalone]/standalone_gearbox`. Si vous utilisez plutôt **Code → Download ZIP**, renommer le dossier extrait `FiveM-Gearbox-main` en `standalone_gearbox`.
 2. Utiliser un FXServer à jour avec OneSync activé.
 3. Ajouter `ensure standalone_gearbox` dans `server.cfg`. Conserver ce nom de dossier.
 4. Modifier la configuration puis redémarrer la ressource pendant une maintenance.
