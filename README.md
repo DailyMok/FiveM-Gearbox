@@ -1,6 +1,6 @@
 # Standalone Gearbox
 
-**FiveM · Auto / Sequential · Version 0.3.0**
+**FiveM · Auto / Sequential · Version 0.3.1**
 
 [English](#english) · [Français](#français)
 
@@ -25,7 +25,7 @@ An independent automatic and sequential gearbox for FiveM, with native engine au
 ### Installation
 
 1. Use an up-to-date FXServer with **OneSync enabled**.
-2. Download **`standalone_gearbox-0.3.0.zip`** from the [v0.3.0 release](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.0).
+2. Download **`standalone_gearbox-0.3.1.zip`** from the [v0.3.1 release](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.1).
 3. Extract the ready-to-install **`standalone_gearbox`** folder. If using **Code → Download ZIP** instead, rename `FiveM-Gearbox-main` to `standalone_gearbox`.
 4. Place it in `resources/[standalone]/standalone_gearbox`. The `fxmanifest.lua` file must be directly inside that folder.
 5. Add this to `server.cfg`:
@@ -64,6 +64,8 @@ All three controls appear under **Settings → Key Bindings → FiveM**. Each pl
 
 Commands: `/sgbox auto`, `/sgbox seq`, `/sgbox toggle`, `/sgbox up`, `/sgbox down` and `/sgbox info`. The command name is configurable.
 
+Normal player mode switching requires a **networked vehicle** so the server can authorize the request. Local vehicles cannot switch mode through these controls. Version 0.3.1 skips network-ID lookups for them, preventing repeated missing-network-object warnings. See the [integration guide](docs/INTEGRATION.md) for vehicle spawners.
+
 A vehicle keeps its mode when its driver changes. The mode resets when the entity is deleted or the resource restarts; it is not saved by plate.
 
 ### Your own HUD
@@ -93,7 +95,7 @@ No shift-sound recordings are shipped. Optional shift sounds are disabled; nativ
 
 Avoid running competing gearbox or handling controllers on the same vehicle. Use model exclusions, `conflictingResources` or the [integration API](docs/INTEGRATION.md).
 
-Version 0.3.0 passed **286 automated tests with simulated FiveM natives**, plus HUD browser checks at three resolutions. No fresh in-game driving or live ESX/QBCore integration test was performed for this release. Complete the [in-game acceptance checklist](docs/VALIDATION.md) on your server before deployment.
+Version 0.3.1 passed **287 automated tests with simulated FiveM natives**, including the local-vehicle regression. HUD browser checks at three resolutions were performed for 0.3.0; the HUD is unchanged in this patch. Post-fix Auto/Sequential switching has not yet been confirmed in game, and no fresh live ESX/QBCore integration test was performed. A separate report of a blocked action in FiveM's native rebinding menu remains unresolved and is not fixed by this patch. Complete the [in-game acceptance checklist](docs/VALIDATION.md) on your server before deployment.
 
 ### License
 
@@ -124,7 +126,7 @@ Une boîte de vitesses automatique et séquentielle autonome pour FiveM, avec au
 ### Installation
 
 1. Utiliser un FXServer à jour avec **OneSync activé**.
-2. Télécharger **`standalone_gearbox-0.3.0.zip`** depuis la [release v0.3.0](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.0).
+2. Télécharger **`standalone_gearbox-0.3.1.zip`** depuis la [release v0.3.1](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.1).
 3. Extraire le dossier **`standalone_gearbox`**, prêt à installer. Si vous utilisez plutôt **Code → Download ZIP**, renommer `FiveM-Gearbox-main` en `standalone_gearbox`.
 4. Le placer dans `resources/[standalone]/standalone_gearbox`. Le fichier `fxmanifest.lua` doit se trouver directement dans ce dossier.
 5. Ajouter dans `server.cfg` :
@@ -163,6 +165,8 @@ Les trois actions apparaissent dans **Paramètres → Raccourcis clavier → Fiv
 
 Commandes : `/sgbox auto`, `/sgbox seq`, `/sgbox toggle`, `/sgbox up`, `/sgbox down` et `/sgbox info`. Le nom de la commande est configurable.
 
+Le changement de mode normal par un joueur nécessite un **véhicule réseau**, afin que le serveur puisse autoriser la demande. Ces commandes ne permettent pas de changer le mode d'un véhicule local. La version 0.3.1 ignore la lecture de l'identifiant réseau de ces véhicules pour éviter les avertissements répétés d'objet réseau absent. Voir le [guide d'intégration](docs/INTEGRATION.md) pour les outils de création de véhicules.
+
 Un véhicule conserve son mode lors d'un changement de conducteur. Ce mode est réinitialisé lorsque l'entité est supprimée ou que la ressource redémarre ; il n'est pas sauvegardé par plaque.
 
 ### Votre propre HUD
@@ -192,7 +196,7 @@ Aucun enregistrement de passage de rapport n'est fourni. Les sons de passage fac
 
 Éviter de faire fonctionner plusieurs contrôleurs de boîte ou de comportement sur un même véhicule. Utiliser les exclusions par modèle, `conflictingResources` ou l'[API d'intégration](docs/INTEGRATION.md).
 
-La version 0.3.0 a passé **286 tests automatiques avec des natives FiveM simulées**, ainsi que des vérifications du HUD en navigateur à trois résolutions. Aucun nouvel essai de conduite en jeu ni d'intégration ESX/QBCore réelle n'a été effectué pour cette version. Suivre la [fiche de validation en jeu](docs/VALIDATION.md) sur votre serveur avant la mise en service.
+La version 0.3.1 a passé **287 tests automatiques avec des natives FiveM simulées**, dont le test de régression des véhicules locaux. Les vérifications du HUD en navigateur à trois résolutions datent de la version 0.3.0 ; le HUD est inchangé dans ce correctif. Le changement Auto/Séquentielle après correction reste à confirmer en jeu et aucun nouvel essai d'intégration ESX/QBCore réelle n'a été effectué. Un signalement distinct de blocage d'une action dans le menu natif de réaffectation FiveM reste non résolu ; ce correctif ne le traite pas. Suivre la [fiche de validation en jeu](docs/VALIDATION.md) sur votre serveur avant la mise en service.
 
 ### Licence
 

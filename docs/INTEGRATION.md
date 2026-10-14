@@ -2,6 +2,14 @@
 
 All gearbox exports run on the client. Keep the resource name `standalone_gearbox`. Use [HUD-API.md](HUD-API.md) for ordinary HUDs and public mode requests.
 
+## Networked vehicles and mode authorization
+
+Normal player mode requests, including commands and the public `requestMode` export, require a networked vehicle with a valid network ID. The server uses that ID to verify the vehicle and driver before authorizing a change. A purely local vehicle cannot be switched through this permission flow.
+
+Version 0.3.1 checks `NetworkGetEntityIsNetworked` before reading a network ID. For a local vehicle it returns zero and does not call `NetworkGetNetworkIdFromEntity` or send a mode-authorization request, preventing repeated missing-network-object warnings. When a vehicle becomes networked, normal switching still requires a server response. This guard does not bypass permissions or turn local vehicles into networked entities.
+
+If your spawner should create vehicles whose mode players can change, create them as networked entities and ensure they have a valid network ID before requesting a mode change. In a client-side `CreateVehicle` call, set the `isNetwork` argument to `true`; choose the remaining arguments for your spawner's ownership and lifecycle needs. Do not silently register another resource's local vehicles as networked from the gearbox.
+
 ## Coordinate a garage or another gearbox
 
 Add only your approved integration's exact resource name to `config.js`:

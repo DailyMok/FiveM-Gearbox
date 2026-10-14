@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 author 'Standalone Gearbox'
 description 'Independent adaptive gearbox: native RPM/audio, automatic and sequential'
-version '0.3.0'
+version '0.3.1'
 
 -- FiveM resource manifest syntax only; all executable gearbox logic is JavaScript.
 shared_scripts {

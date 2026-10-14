@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.3.1 — 2026-10-14
+
+- Guard network-ID lookup with `NetworkGetEntityIsNetworked` so vehicles created locally by an integrating resource do not flood the client log with missing-network-object warnings. Local vehicles still cannot use the server-authorized mode-change protocol. A regression test covers repeated ticks and mode commands on a local vehicle, then its transition to a networked entity requiring a server reply. Post-fix in-game mode switching has not yet been confirmed.
+- No configuration migration is required from 0.3.0. Networked vehicles keep the existing server permission checks.
+- The separately reported issue with FiveM's native key-binding menu remains unresolved; this patch does not change input mappings or device settings.
+
 ## 0.3.0
 
 License/documentation update: the original DailyMok code and documentation are now covered by the [Free Use and No Resale License](../LICENSE). Monetized servers are permitted; resale and paid redistribution of the mod are prohibited. The installable ZIP has been refreshed to include the license and updated documentation. The game scripts and original `v0.3.0` source tag are unchanged; the refreshed ZIP has a new SHA-256 checksum.

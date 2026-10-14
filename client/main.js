@@ -44,7 +44,9 @@
   const validReference = value => Number.isFinite(value) && value > 0 && value < 1500;
   const api = {
     hashModel: name => GetHashKey(name),
-    netId: vehicle => NetworkGetNetworkIdFromEntity(vehicle),
+    // Developer tools may create local vehicles. They have no network object
+    // and cannot participate in the server-authorized mode protocol.
+    netId: vehicle => bool(NetworkGetEntityIsNetworked(vehicle)) ? NetworkGetNetworkIdFromEntity(vehicle) : 0,
     sendMode: (...args) => emitNet('standalone_gearbox:modeRequest',...args),
     modeRejected: reason => notify(translate(reason === 'denied' ? 'denied' : 'unavailable')),
     instanceId: () => 'sg-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10),
