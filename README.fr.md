@@ -1,12 +1,12 @@
-# Standalone Gearbox — 0.3.1
+# Standalone Gearbox — 0.3.2
 
-Boîte de vitesses automatique/séquentielle autonome pour FiveM, avec HUD facultatif, trois touches réaffectables, permissions serveur et API pour votre propre HUD. Aucun framework RP, base de données ou autre mod de boîte n'est nécessaire.
+Boîte de vitesses automatique/séquentielle autonome pour FiveM, avec HUD facultatif, touches clavier et volant/manette réaffectables, sélection manuelle du point mort (`N`) et de la marche arrière (`R`) en mode séquentiel, permissions serveur et API pour votre propre HUD. Aucun framework RP, base de données ou autre mod de boîte n'est nécessaire.
 
 [▶ Voir la démonstration sur YouTube](https://youtu.be/pgyUvUh0WwE)
 
 ## Installation
 
-1. Télécharger **`standalone_gearbox-0.3.1.zip`** depuis la [release v0.3.1](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.1), puis extraire son dossier `standalone_gearbox`. Copier ce dossier dans les ressources du serveur, par exemple `resources/[standalone]/standalone_gearbox`. Si vous utilisez plutôt **Code → Download ZIP**, renommer le dossier extrait `FiveM-Gearbox-main` en `standalone_gearbox`.
+1. Télécharger **`standalone_gearbox-0.3.2.zip`** depuis la [release v0.3.2](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.2), puis extraire son dossier `standalone_gearbox`. Copier ce dossier dans les ressources du serveur, par exemple `resources/[standalone]/standalone_gearbox`. Si vous utilisez plutôt **Code → Download ZIP**, renommer le dossier extrait `FiveM-Gearbox-main` en `standalone_gearbox`.
 2. Utiliser un FXServer à jour avec OneSync activé.
 3. Ajouter `ensure standalone_gearbox` dans `server.cfg`. Conserver ce nom de dossier.
 4. Modifier la configuration puis redémarrer la ressource pendant une maintenance.
@@ -50,11 +50,11 @@ Les permissions avancées sont exclusivement dans `server/permissions.js` : `eve
 | Monter un rapport | Page Up |
 | Descendre un rapport | Page Down |
 
-Les trois actions apparaissent dans **Paramètres → Raccourcis clavier → FiveM**. Chaque joueur peut les modifier. Une nouvelle touche par défaut côté serveur ne remplace pas une préférence déjà sauvegardée.
+Les trois actions clavier et les trois lignes **Volant / manette :** (libres par défaut) apparaissent dans **Paramètres → Raccourcis clavier → FiveM**. Chaque joueur peut les modifier indépendamment. Une nouvelle touche par défaut côté serveur ne remplace pas une préférence déjà sauvegardée. Voir le [guide des périphériques](docs/INPUT-DEVICES.md#français--affecter-vos-palettes-ou-boutons) et le [guide N / R](docs/MANUAL-NEUTRAL-REVERSE.md).
 
 Commandes : `/sgbox auto`, `/sgbox seq`, `/sgbox toggle`, `/sgbox up`, `/sgbox down`, `/sgbox info`.
 
-Le changement de mode normal par un joueur nécessite un **véhicule réseau**, afin que le serveur puisse autoriser la demande. Ces commandes ne permettent pas de changer le mode d'un véhicule local. La version 0.3.1 ignore la lecture de son identifiant réseau pour éviter les avertissements répétés d'objet réseau absent. Voir le [guide d'intégration](docs/INTEGRATION.md) pour les outils de création de véhicules.
+Le changement de mode normal par un joueur nécessite un **véhicule réseau**, afin que le serveur puisse autoriser la demande. Ces commandes ne permettent pas de changer le mode d'un véhicule local. Voir le [guide d'intégration](docs/INTEGRATION.md) pour les outils de création de véhicules.
 
 Le mode appartient au véhicule vivant et suit le changement de conducteur. Il repart au défaut après suppression de l'entité ou redémarrage de la ressource ; aucune sauvegarde par plaque n'est incluse.
 
@@ -73,11 +73,11 @@ AddEventHandler('standalone_gearbox:state', function(state)
 end)
 ```
 
-Utiliser ces rapports logiques, pas le rapport natif GTA. Le [contrat API](docs/HUD-API.md) décrit les champs, la marche arrière, les états inactifs et les exemples JS/Lua.
+Utiliser ces rapports logiques, pas le rapport natif GTA. Le [contrat API](docs/HUD-API.md) décrit les champs, le point mort, la marche arrière, les états inactifs et les exemples JS/Lua.
 
 ## Vérification sur votre serveur
 
-La version 0.3.1 a passé 287 tests automatiques avec des natives simulées, dont le test de régression des véhicules locaux. Les vérifications du HUD en navigateur datent de la version 0.3.0 ; son code est inchangé. Le changement Auto/Séquentielle après correction reste à confirmer en jeu. Un signalement distinct de blocage dans le menu natif de réaffectation FiveM reste non résolu et ne fait pas partie de ce correctif.
+La version 0.3.2 a passé 342 tests automatiques avec des natives simulées, incluant la sélection séquentielle `N`/`R`, les affectations volant/manette et les véhicules locaux.
 
 Les tests automatiques utilisent des natives simulées. Ils ne remplacent pas un essai FiveM, ni un essai des versions ESX/QBCore réellement installées. Vérifier au minimum les deux modes, les touches, un changement de conducteur, les permissions, le HUD masqué et les véhicules spécifiques du serveur.
 

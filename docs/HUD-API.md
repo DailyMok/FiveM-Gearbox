@@ -12,7 +12,7 @@ console.log(state.gear, state.mode, state.speedKmh);
 
 on('standalone_gearbox:state', state => {
   // Replace this with your own HUD update.
-  // gear !== null includes both forward gears and reverse ('R').
+  // gear !== null includes forward gears, explicit Neutral ('N') and reverse ('R').
   SendNuiMessage(JSON.stringify({
     action: 'gearbox',
     visible: state.gear !== null,
@@ -50,8 +50,8 @@ Your own NUI must handle the example message. Start your HUD after `standalone_g
 | `vehicle` | Local client vehicle handle; `0` without a target |
 | `model` | Unsigned 32-bit model hash, or `null` |
 | `active` | Custom forward transmission is currently owned and valid |
-| `gear` | Logical gear integer, `'R'` for owned reverse, or `null` |
-| `displayGear` | Logical gear, `'D'` for automatic CVT, `'R'`, or `null` |
+| `gear` | Logical gear integer, `'N'` for explicit sequential Neutral, `'R'` for owned reverse, or `null` |
+| `displayGear` | Logical gear, `'D'` for automatic CVT, `'N'`, `'R'`, or `null` |
 | `gearCount` | Number of logical positions; `0` outside ownership |
 | `mode` | `'auto'`, `'seq'`, or `null` outside ownership |
 | `speedKmh` | Native speed converted to km/h; `0` if unavailable |
@@ -63,7 +63,7 @@ Your own NUI must handle the example message. Start your HUD after `standalone_g
 | `controlled` | Whether this client currently has network control |
 | `canChangeMode` | Recent server permission hint for a button, never authority to make a change |
 
-JavaScript `null` values are absent/nil when read through Lua. Reverse uses `active: false` while retaining its owned `gear: 'R'` and mode. An excluded, unsupported or uncontrolled vehicle must not be presented as an active custom gearbox.
+JavaScript `null` values are absent/nil when read through Lua. Explicit sequential Neutral and reverse both use `active: false` while retaining their owned `gear: 'N'` or `gear: 'R'` and mode. An excluded, unsupported or uncontrolled vehicle must not be presented as an active custom gearbox.
 
 `canChangeMode` is refreshed by server synchronization, normally every two seconds, and expires after five seconds without a fresh valid reply. The server still rechecks every mode request.
 

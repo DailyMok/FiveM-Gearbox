@@ -26,6 +26,17 @@ globalThis.StandaloneGearboxAdmin = {
   },
   // Initial defaults only: players can rebind all three in Settings > Key Bindings > FiveM.
   // Changing these defaults does not replace a player's saved bindings.
+
+  // WHEEL / CONTROLLER BUTTONS — independent from the keyboard bindings above.
+  // Leave '' unassigned; players choose their buttons in FiveM Key Bindings.
+  // JOYSTICK_BUTTON: IOM_JOYSTICK_BUTTON1 to IOM_JOYSTICK_BUTTON32 (hardware dependent).
+  // PAD_DIGITALBUTTON: e.g. R1_INDEX / L1_INDEX for a recognized gamepad.
+  deviceKeys: {
+    mapper: 'JOYSTICK_BUTTON',
+    toggle: '',
+    up: '',                     // Example: 'IOM_JOYSTICK_BUTTON5'.
+    down: ''                    // Example: 'IOM_JOYSTICK_BUTTON6'.
+  },
   command: 'sgbox',              // /sgbox auto | seq | toggle | up | down | info
 
   // OPTIONAL SHIFT SOUNDS (engine audio remains native)

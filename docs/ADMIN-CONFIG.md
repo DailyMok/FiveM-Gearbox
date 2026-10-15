@@ -17,6 +17,10 @@ Restart the resource after changing these files. Back up your settings before an
 | `keys.toggle` | `'M'` | Server default for Auto/Sequential |
 | `keys.up` | `'PAGEUP'` | Server default for shift up |
 | `keys.down` | `'PAGEDOWN'` | Server default for shift down |
+| `deviceKeys.mapper` | `'JOYSTICK_BUTTON'` | Mapper for the three additional device defaults; also supports `'PAD_DIGITALBUTTON'` |
+| `deviceKeys.up` | `''` | Device-button default for shift up; empty leaves it unbound |
+| `deviceKeys.down` | `''` | Device-button default for shift down; empty leaves it unbound |
+| `deviceKeys.toggle` | `''` | Device-button default for Auto/Sequential; empty leaves it unbound |
 | `command` | `'sgbox'` | Player command name, without a slash |
 | `shiftSounds.enabled` | `false` | Optional gear-change audio |
 | `shiftSounds.volume` | `100` | 0–100; 100 applies a maximum digital gain of 0.30 |
@@ -35,7 +39,11 @@ keys: { toggle: 'M', up: 'PAGEUP', down: 'PAGEDOWN' },
 
 Edit the properties inside the existing `StandaloneGearboxAdmin` object. JavaScript booleans are `true` / `false`, not quoted strings. Keep commas between properties.
 
-The three key mappings are registered with FiveM. Each player can change them in Settings → Key Bindings → FiveM; already-saved bindings take precedence over new defaults.
+The three keyboard mappings are registered with FiveM. Each player can change them in Settings → Key Bindings → FiveM; already-saved bindings take precedence over new defaults.
+
+Three additional wheel/controller mappings keep device buttons separate from the keyboard assignments. They start unbound and do not require keyboard emulation for buttons recognized by FiveM. `deviceKeys.mapper` selects the server default mapper, not a filter on the native input-capture menu. See the [device-button guide](INPUT-DEVICES.md) for player instructions, supported button names and optional presets.
+
+In Sequential mode, shifting down from `1` selects Neutral (`N`), and shifting down again selects Reverse (`R`); shifting up moves `R → N → 1`. See [manual Neutral/Reverse](MANUAL-NEUTRAL-REVERSE.md) for details.
 
 Sound volume 0 is silent, 50 gives gain 0.15 and 100 gives gain 0.30. Invalid non-numeric values produce silence. The 200 ms throttle cut remains independent of audio.
 

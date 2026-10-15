@@ -1,7 +1,7 @@
 (function (root) {
   'use strict';
   const config = root.StandaloneGearboxConfig;
-  const translate = key => root.StandaloneGearboxLocale.text(config.locale, key, { command: config.command });
+  const translate = (key, values = {}) => root.StandaloneGearboxLocale.text(config.locale, key, { command: config.command, ...values });
   const catalogue = root.StandaloneGearboxProfiles;
   const referenceCache = new Map();
   const modelNames = new Map(Object.keys({ ...catalogue, ...config.modelOverrides })
@@ -63,6 +63,8 @@
     setRpm: (vehicle,value) => SetVehicleCurrentRpm(vehicle,value),
     rpm: vehicle => GetVehicleCurrentRpm(vehicle),
     cutThrottle: () => DisableControlAction(0, 71, true),
+    neutralCapabilities: () => typeof root.SetVehicleCheatPowerIncrease === 'function',
+    neutralDrive: vehicle => root.SetVehicleCheatPowerIncrease(vehicle, 0),
     stopShiftFeedback: () => SendNuiMessage(JSON.stringify({type:'gearboxShiftSoundStop'})),
     shiftFeedback: data => {
       if(!config.shiftFeedback?.enabled)return;
@@ -151,7 +153,7 @@
     },
     log: event => {
       if (config.debug || ['unsupported', 'restore_pending', 'suspended', 'final_ratio_transition', 'wheel_lock_diagnostic', 'wheel_lock_inhibited', 'rpm_cap_diagnostic', 'direction_transition', 'transmission_release'].includes(event.phase))
-        console.log('[standalone_gearbox] ' + JSON.stringify({version:'0.3.0',...event}));
+        console.log('[standalone_gearbox] ' + JSON.stringify({version:'0.3.2',...event}));
     }
   };
   const controller = new root.StandaloneGearboxController(api, config, catalogue);
@@ -173,15 +175,11 @@
     if (option === 'info') { notify(JSON.stringify(controller.telemetry())); return; }
     notify(translate('usage'));
   }, false);
-  RegisterCommand('+sgbox_up', () => controller.requestShift(1), false);
-  RegisterCommand('-sgbox_up', () => {}, false);
-  RegisterCommand('+sgbox_down', () => controller.requestShift(-1), false);
-  RegisterCommand('-sgbox_down', () => {}, false);
-  RegisterKeyMapping('+sgbox_up', translate('keyUp'), 'keyboard', config.upKey);
-  RegisterKeyMapping('+sgbox_down', translate('keyDown'), 'keyboard', config.downKey);
-  RegisterCommand('+sgbox_toggle',()=>access.request('toggle'),false);
-  RegisterCommand('-sgbox_toggle',()=>{},false);
-  RegisterKeyMapping('+sgbox_toggle',translate('keyToggle'),'keyboard',config.toggleKey);
+  root.StandaloneGearboxInputs.register(config, translate, {
+    up: () => controller.requestShift(1),
+    down: () => controller.requestShift(-1),
+    toggle: () => access.request('toggle')
+  });
   const trusted=()=>{const caller=typeof GetInvokingResource==='function'?GetInvokingResource():null;return !!caller&&config.trustedResources?.includes(caller);};
   exports('setMode', mode => trusted()?access.override(mode):access.request(mode));
   exports('requestMode', mode => access.request(mode));

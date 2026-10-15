@@ -2,7 +2,7 @@
 
 ## Vehicle facts
 
-The internal model catalogue was derived from selected technical facts in [DurtyFree/gta-v-data-dumps](https://github.com/DurtyFree/gta-v-data-dumps), snapshot `b65684e00f689fdec405c5f1055322c802d3c895`. The development workspace retains the input catalogue, exact references and source hashes; the research dataset is not included in this installable resource repository.
+The internal model catalogue was derived from selected technical facts in [DurtyFree/gta-v-data-dumps](https://github.com/DurtyFree/gta-v-data-dumps), snapshot `b65684e00f689fdec405c5f1055322c802d3c895`. The source repository retains the input catalogue, exact references and source hashes under `research/`.
 
 The recorded source audit found no declared license for that snapshot. Public availability must not be described as an open-source license for Rockstar assets or the full data dumps. The resource contains selected factual model/type/transmission information and project-specific gameplay classifications; it does not package the source dumps, GTA models, textures or marketing material.
 

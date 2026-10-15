@@ -11,6 +11,7 @@
       this.instance = api.instanceId(); this.stopping = false;
       this.capRpm = new root.StandaloneGearboxCapRpm(api, config, record => this.publish(record));
       this.braking = new root.StandaloneGearboxWheelBrake(api, config, record => this.publish(record));
+      this.manualRange = new root.StandaloneGearboxManualRange(this);
     }
     report(phase, reason, extra = {}) {
       if (this.status.phase !== phase || this.status.reason !== reason) this.api.log({ phase, reason, ...extra });
@@ -125,6 +126,7 @@
       this.capRpm.stop(record, reason);
       const changed = record.phase !== 'restore_pending' || record.reason !== reason || !!record.pending;
       record.phase = 'restore_pending'; record.reason = reason; record.pending = null;
+      record.manualRange = null;
       if(changed&&this.api.now()-(record.lastReleaseTrace??-Infinity)>=5000){
         record.lastReleaseTrace=this.api.now();
         try{const sample=this.api.read(record.vehicle);this.api.log({phase:'transmission_release',model:record.modelName??null,
@@ -201,11 +203,13 @@
       return true;
     }
     physicalRatio(record, sample) {
+      if (record.manualRange === 'N') return null;
+      if (sample.current === 0) { const reverse = this.api.ratio(record.vehicle, 0); return L.finite(reverse) ? reverse : null; }
       return ['native_top', 'native_final'].includes(record.backend) ? this.api.ratio(record.vehicle, sample.current) : record.expectedRatio;
     }
-    commitRatio(record, target, sample) {
+    commitRatio(record, target, sample, forceForward = false) {
       const api = this.api, v = record.vehicle, ratio = record.table[target - 1];
-      if (sample.high !== 1 || sample.current !== 1 || sample.next !== 1) return false;
+      if (sample.high !== 1 || (!forceForward && (sample.current !== 1 || sample.next !== 1))) return false;
       const oldRatio = api.ratio(v, 1);
       const from = record.selected;
       record.previousRatio = oldRatio; record.expectedRatio = ratio;
@@ -213,6 +217,7 @@
       record.backend = 'ratio';
       if (!this.publish(record)) { record.expectedRatio = oldRatio; return false; }
       api.setRatio(v, 1, ratio);
+      if (forceForward) { api.setNext(v, 1); api.setCurrent(v, 1); }
       const after = api.read(v);
       if (after.current !== 1 || after.next !== 1 || after.high !== 1 || !L.near(api.ratio(v, 1), ratio)) return false;
       record.selected = target; record.previousRatio = null; this.publish(record);
@@ -338,7 +343,8 @@
       const record = this.records.get(v);
       if (!record) { this.capture(v); return; }
       if (record.phase !== 'active') return;
-      const s = this.capRpm.sample(record, api.read(v)), now = api.now(), gap = now - record.lastTick;
+      let s = this.capRpm.sample(record, api.read(v));
+      const now = api.now(), gap = now - record.lastTick;
       record.lastTick = now; record.observed = s;
       record.observedRatio = this.physicalRatio(record, s);
       if (!L.validSample(s)) { this.release(record, 'invalid_native_sample'); return; }
@@ -351,6 +357,9 @@
       if (!integrity) {
         this.blocked.set(v, record.model); this.release(record, 'external_gearbox_writer'); return;
       }
+      const wasRange = !!record.manualRange || !!record.pending?.range;
+      if (this.manualRange.update(record, s, now)) return;
+      if (wasRange) s = this.capRpm.sample(record, api.read(v));
       if (this.updateDirection(record, s, now)) return;
       if (s.current !== 1 || s.next !== 1) { this.release(record, 'native_first_not_held'); return; }
       if (this.mode === 'auto' && s.speedMps <= c.stationaryMps && s.throttle > 0.1 && record.lastThrottle <= 0.1 && record.selected !== 1 && !record.pending)
@@ -413,18 +422,25 @@
     requestShift(direction, stationaryFirst = false, automatic = false) {
       const api = this.api, record = this.records.get(this.currentVehicle);
       const manualDown = direction === -1 && !automatic && !stationaryFirst;
-      if (!record || record.phase !== 'active' || record.directionTransition || (record.pending && !manualDown) || !api.isDriver(record.vehicle) || !api.controlled(record.vehicle)) return false;
+      const rangesAllowed = this.mode === 'seq' && !automatic && !stationaryFirst;
+      if (!record || record.phase !== 'active' || (record.directionTransition && !rangesAllowed) || (record.pending && !manualDown) || !api.isDriver(record.vehicle) || !api.controlled(record.vehicle)) return false;
       if (!stationaryFirst && direction !== 1 && direction !== -1) return false;
       if (!manualDown && api.now() - record.lastShift < this.config.shift.cooldownMs) return false;
+      const s = this.capRpm.sample(record, api.read(record.vehicle));
+      if (!L.validSample(s) || !s.engineRunning || s.high !== 1
+        || !L.near(api.ratio(record.vehicle, 1), record.expectedRatio)) return false;
       // A manual down request can replace an upshift or extend queued downs.
       // No speed/RPM protection or cooldown discards the driver's selection.
+      const position = rangesAllowed ? this.manualRange.position(record, s) : record.selected;
       const base = manualDown && record.pending && !record.pending.committed
-        ? Math.min(record.selected, record.pending.target) : record.selected;
+        ? Math.min(position, this.manualRange.pendingPosition(record)) : position;
       const target = base + direction;
-      if (!Number.isInteger(target) || target < 1 || target > record.table.length) return false;
-      const s = this.capRpm.sample(record, api.read(record.vehicle));
-      if (!L.validSample(s) || !s.engineRunning || s.current !== 1 || s.next !== 1 || s.high !== 1
-        || !L.near(api.ratio(record.vehicle, 1), record.expectedRatio)) return false;
+      if (!Number.isInteger(target) || target < (rangesAllowed ? -1 : 1) || target > record.table.length) return false;
+      if (rangesAllowed && (target <= 0 || record.manualRange)) {
+        if (![0, 1].includes(s.current) || ![0, 1].includes(s.next)) return false;
+        return this.manualRange.queue(record, target);
+      }
+      if (s.current !== 1 || s.next !== 1) return false;
       const stationaryReset = stationaryFirst && s.speedMps <= this.config.stationaryMps && Math.abs(s.forwardMps) <= this.config.stationaryMps;
       if (automatic && target < record.selected && !stationaryReset && !L.autoDownshiftReady(s, record.caps[target - 1], this.config)) {
         this.report('active', 'auto_downshift_speed_rejected'); return false;
@@ -436,6 +452,7 @@
       const vehicle=this.api.driverVehicle();
       if (!['auto', 'seq', 'native'].includes(mode)||!vehicle||!this.api.exists(vehicle)||!this.api.isDriver(vehicle)||!this.api.controlled(vehicle)) return false;
       this.vehicleModes.set(vehicle,{model:this.api.model(vehicle),mode});this.mode=mode;
+      this.manualRange.modeChanged(this.records.get(vehicle), mode);
       if (mode === 'native') {const record=this.records.get(vehicle);if(record)this.release(record,'mode_native');}
       return true;
     }
@@ -461,16 +478,17 @@
       let actualNative = null;
       if (record && this.api.exists(record.vehicle)) {
         const actual = this.api.read(record.vehicle);
-        const ratio = actual.current > 0 ? this.api.ratio(record.vehicle, actual.current) : null;
+        const ratio = actual.current >= 0 ? this.api.ratio(record.vehicle, actual.current) : null;
         actualNative = { current: actual.current, next: actual.next, high: actual.high,
-          engagedRatio: L.positive(ratio) ? ratio : null, rpm: actual.rpm,
+          engagedRatio: L.finite(ratio) && ratio !== 0 ? ratio : null, rpm: actual.rpm,
           clutch: L.finite(actual.clutch) ? actual.clutch : null,
           throttleOffset: L.finite(actual.throttleOffset) ? actual.throttleOffset : null };
       }
-      const limited = record?.phase === 'active' && !record?.directionTransition && this.config.limiter.enabled && record.backend === 'ratio' && record.selected < record.table.length;
-      return clone({ version: '0.2.16', mode: this.mode, ...this.status, backend: record?.backend ?? null,
-        transmissionStrategy: record?.profile?.strategy ?? null, finalNativeDomain: false, finalLogicalRatio: record?.selected === record?.table?.length && !!record?.table,
-        heldNativeGear: record?.backend === 'ratio' ? 1 : null,
+      const limited = record?.phase === 'active' && !record?.directionTransition && !record?.manualRange && this.config.limiter.enabled && record.backend === 'ratio' && record.selected < record.table.length;
+      return clone({ version: '0.3.1-seq-nr-dev', mode: this.mode, ...this.status, backend: record?.backend ?? null,
+        transmissionStrategy: record?.profile?.strategy ?? null, finalNativeDomain: false, finalLogicalRatio: !record?.manualRange && record?.selected === record?.table?.length && !!record?.table,
+        heldNativeGear: record?.manualRange === 'N' ? null : record?.manualRange === 'R' ? 0 : record?.backend === 'ratio' ? 1 : null,
+        manualRange: record?.manualRange ?? null,
         actualNative, directionTransition: record?.directionTransition ?? null, effectiveCapKmh: limited ? record.caps[record.selected - 1] : null,
         observedMotion: record?.motion ?? null,
         lastFinalTransition: record?.lastFinalTransition ?? null,
@@ -479,9 +497,9 @@
         shiftDecisionRpm: record?.observed ? L.shiftRpm(record.observed, record) : null,
         physicalRatio: record?.observed ? this.physicalRatio(record, record.observed) : null,
         pendingRestores: [...this.records.values()].filter(r => r.phase !== 'active').length,
-        selected: record?.selected ?? null, logicalGears: record?.table?.length ?? null,
+        selected: record?.manualRange || record?.selected || null, logicalGears: record?.table?.length ?? null,
         nativeGear: record?.observed?.current ?? null, nativeRpm: record?.observed?.rpm ?? null,
-        referenceKmh: record?.referenceKmh ?? null, capKmh: record?.caps?.[record.selected - 1] ?? null,
+        referenceKmh: record?.referenceKmh ?? null, capKmh: record?.manualRange ? null : record?.caps?.[record.selected - 1] ?? null,
         capsAreEstimates: !record?.profile?.capsKmh, pendingShift: !!record?.pending,
         speedLimiterEnabled: !!limited,
         engineBrake: this.braking.telemetry(record), capRpm: this.capRpm.telemetry(record),

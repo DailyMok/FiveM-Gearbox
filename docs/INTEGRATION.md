@@ -2,6 +2,12 @@
 
 All gearbox exports run on the client. Keep the resource name `standalone_gearbox`. Use [HUD-API.md](HUD-API.md) for ordinary HUDs and public mode requests.
 
+## Device-button mappings in development
+
+The unreleased development build adds independent native FiveM mappings for wheel/controller upshift, downshift and mode switching. They use the same gearbox actions and permissions as the keyboard; no integration export or server authorization rule changes. They are not part of the published v0.3.1 ZIP. The [device-button guide](INPUT-DEVICES.md) explains assignments and server defaults.
+
+This is button input through FiveM, not a raw hardware interface. No steering/pedal axis reader, force feedback, H-pattern shifter, clutch simulation or physical-device selector is provided. Another controller resource should keep using the documented exports where appropriate, rather than assigning the same action through several input paths.
+
 ## Networked vehicles and mode authorization
 
 Normal player mode requests, including commands and the public `requestMode` export, require a networked vehicle with a valid network ID. The server uses that ID to verify the vehicle and driver before authorizing a change. A purely local vehicle cannot be switched through this permission flow.

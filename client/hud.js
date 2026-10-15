@@ -4,8 +4,8 @@
   function view(sample, record, mode, config) {
     if (!L.validSample(sample) || !Number.isInteger(sample.current)) return null;
     const owned = record?.phase === 'active' && sample.high === 1;
-    const active = owned && !record.directionTransition && sample.current === 1 && sample.next === 1 && sample.high === 1;
-    const gear = sample.current === 0 ? (sample.engineRunning ? 'R' : 'N')
+    const active = owned && !record.manualRange && !record.directionTransition && sample.current === 1 && sample.next === 1 && sample.high === 1;
+    const gear = owned && record.manualRange ? record.manualRange : sample.current === 0 ? (sample.engineRunning ? 'R' : 'N')
       : active ? record.profile.strategy === 'cvt' && mode === 'auto' ? 'D' : record.selected : sample.current;
     let hint = null;
     if (active && sample.engineRunning && !sample.inAir && sample.forwardMps >= 0 && !record.pending) {

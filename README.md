@@ -1,13 +1,13 @@
 # Standalone Gearbox
 
-**FiveM · Auto / Sequential · Version 0.3.1**
+**FiveM · Auto / Sequential · Version 0.3.2**
 
 [English](#english) · [Français](#français)
 
 <a id="english"></a>
 ## English
 
-An independent automatic and sequential gearbox for FiveM, with native engine audio, an optional HUD and controls each player can rebind. No ESX, QBCore, database or other gearbox resource is required.
+An independent automatic and sequential gearbox for FiveM, with native engine audio, an optional HUD, manual Neutral/Reverse in Sequential mode, and keyboard + wheel/controller bindings each player can rebind. No ESX, QBCore, database or other gearbox resource is required.
 
 ### Demo
 
@@ -16,16 +16,17 @@ An independent automatic and sequential gearbox for FiveM, with native engine au
 ### Features
 
 - **Auto or Sequential:** choose the server default and allow drivers to switch, or lock the chosen mode.
+- **Manual Neutral and Reverse in Sequential mode:** shift down through `1 → N → R` and shift up through `R → N → 1` without speed thresholds; Neutral stays decoupled when revving or braking, and Reverse stays engaged until a manual upshift.
+- **Independent keyboard and wheel/controller controls:** rebind keyboard keys and steering-wheel paddles / controller buttons separately in FiveM's key-binding settings.
 - **Automatic vehicle coverage:** eligible motorized road vehicles are handled without a model-by-model setup, including unlisted add-ons.
-- **Three rebindable controls:** change mode, shift up and shift down through FiveM's key-binding settings.
 - **Server-side permissions:** allow every driver, selected identifiers, ACE permissions or framework jobs to change mode.
-- **Optional HUD and public API:** use the included display or send the logical gear and mode to your own HUD.
+- **Optional HUD and public API:** use the included display or send the logical gear (`1..N`, `N`, `R`) and mode to your own HUD.
 - **English and French:** select the player-facing language in `config.js`; configuration comments are in English.
 
 ### Installation
 
 1. Use an up-to-date FXServer with **OneSync enabled**.
-2. Download **`standalone_gearbox-0.3.1.zip`** from the [v0.3.1 release](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.1).
+2. Download **`standalone_gearbox-0.3.2.zip`** from the [v0.3.2 release](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.2).
 3. Extract the ready-to-install **`standalone_gearbox`** folder. If using **Code → Download ZIP** instead, rename `FiveM-Gearbox-main` to `standalone_gearbox`.
 4. Place it in `resources/[standalone]/standalone_gearbox`. The `fxmanifest.lua` file must be directly inside that folder.
 5. Add this to `server.cfg`:
@@ -42,7 +43,7 @@ No npm installation, build step, SQL import or external web service is needed. K
 
 | File | What to configure |
 |---|---|
-| [`config.js`](config.js) | Language, HUD, vehicle coverage, default mode, mode switching, default keys and optional sound |
+| [`config.js`](config.js) | Language, HUD, vehicle coverage, default mode, mode switching, default keyboard/device keys and optional sound |
 | [`vehicle-profiles.js`](vehicle-profiles.js) | Optional exceptions by model hash or spawn name |
 | [`server/permissions.js`](server/permissions.js) | Who can change mode: everyone, identifiers, ACE or jobs |
 
@@ -60,11 +61,11 @@ See the [administrator guide](docs/ADMIN-CONFIG.md) for examples and the [vehicl
 | Shift up in Sequential | Page Up |
 | Shift down in Sequential | Page Down |
 
-All three controls appear under **Settings → Key Bindings → FiveM**. Each player can change them independently. Changing server defaults does not overwrite a player's saved bindings.
+All three keyboard controls and three additional **Wheel / controller:** controls (unbound by default) appear under **Settings → Key Bindings → FiveM**. Each player can change them independently. Changing server defaults does not overwrite a player's saved bindings. See the [wheel/controller guide](docs/INPUT-DEVICES.md) and the [manual Neutral/Reverse guide](docs/MANUAL-NEUTRAL-REVERSE.md).
 
 Commands: `/sgbox auto`, `/sgbox seq`, `/sgbox toggle`, `/sgbox up`, `/sgbox down` and `/sgbox info`. The command name is configurable.
 
-Normal player mode switching requires a **networked vehicle** so the server can authorize the request. Local vehicles cannot switch mode through these controls. Version 0.3.1 skips network-ID lookups for them, preventing repeated missing-network-object warnings. See the [integration guide](docs/INTEGRATION.md) for vehicle spawners.
+Normal player mode switching requires a **networked vehicle** so the server can authorize the request. Local vehicles cannot switch mode through these controls. See the [integration guide](docs/INTEGRATION.md) for vehicle spawners.
 
 A vehicle keeps its mode when its driver changes. The mode resets when the entity is deleted or the resource restarts; it is not saved by plate.
 
@@ -74,8 +75,8 @@ Set `hud: false` to hide the included HUD. The client export and local event rem
 
 ```js
 const state = exports['standalone_gearbox'].getHudState();
-// state.gear: logical gear, 'R', or null
-// state.displayGear: display-ready gear, 'D', 'R', or null
+// state.gear: logical gear, 'N', 'R', or null
+// state.displayGear: display-ready gear, 'D', 'N', 'R', or null
 // state.mode: 'auto', 'seq', or null
 ```
 
@@ -95,7 +96,7 @@ No shift-sound recordings are shipped. Optional shift sounds are disabled; nativ
 
 Avoid running competing gearbox or handling controllers on the same vehicle. Use model exclusions, `conflictingResources` or the [integration API](docs/INTEGRATION.md).
 
-Version 0.3.1 passed **287 automated tests with simulated FiveM natives**, including the local-vehicle regression. HUD browser checks at three resolutions were performed for 0.3.0; the HUD is unchanged in this patch. Post-fix Auto/Sequential switching has not yet been confirmed in game, and no fresh live ESX/QBCore integration test was performed. A separate report of a blocked action in FiveM's native rebinding menu remains unresolved and is not fixed by this patch. Complete the [in-game acceptance checklist](docs/VALIDATION.md) on your server before deployment.
+Version 0.3.2 passed **342 automated tests with simulated FiveM natives**, including sequential Neutral/Reverse, wheel/controller button mappings and the local-vehicle regression. Complete the [in-game acceptance checklist](docs/VALIDATION.md) on your server before deployment.
 
 ### License
 
@@ -108,7 +109,7 @@ The [DailyMok Free Use and No Resale License](LICENSE) permits use, modification
 <a id="français"></a>
 ## Français
 
-Une boîte de vitesses automatique et séquentielle autonome pour FiveM, avec audio moteur natif, HUD facultatif et touches personnalisables par chaque joueur. Aucun framework ESX/QBCore, base de données ou autre mod de boîte n'est nécessaire.
+Une boîte de vitesses automatique et séquentielle autonome pour FiveM, avec audio moteur natif, HUD facultatif, sélection manuelle du point mort (`N`) et de la marche arrière (`R`) en mode séquentiel, et touches clavier + volant/manette personnalisables par chaque joueur. Aucun framework ESX/QBCore, base de données ou autre mod de boîte n'est nécessaire.
 
 ### Démonstration
 
@@ -117,16 +118,17 @@ Une boîte de vitesses automatique et séquentielle autonome pour FiveM, avec au
 ### Fonctionnalités
 
 - **Auto ou Séquentielle :** choisir le mode par défaut du serveur et autoriser son changement, ou verrouiller le mode choisi.
+- **Point mort (`N`) et marche arrière (`R`) manuels en Séquentielle :** rétrograder via `1 → N → R` et monter via `R → N → 1` sans seuil de vitesse ; le point mort reste engagé à l'accélération ou au freinage, et la marche arrière reste maintenue jusqu'au passage supérieur manuel.
+- **Touches clavier et volant/manette indépendantes :** affecter séparément le clavier et les palettes/boutons de volant ou manette depuis les paramètres FiveM.
 - **Prise en charge automatique :** les véhicules routiers motorisés admissibles sont reconnus sans configuration modèle par modèle, y compris les add-ons absents du catalogue.
-- **Trois touches personnalisables :** changer de mode, monter et descendre les rapports depuis les paramètres FiveM.
 - **Permissions côté serveur :** autoriser tous les conducteurs, certains identifiants, une permission ACE ou des métiers à changer de mode.
-- **HUD facultatif et API publique :** utiliser l'affichage intégré ou récupérer le rapport logique et le mode dans votre propre HUD.
+- **HUD facultatif et API publique :** utiliser l'affichage intégré ou récupérer le rapport logique (`1..N`, `N`, `R`) et le mode dans votre propre HUD.
 - **Anglais et français :** choisir la langue des textes joueurs dans `config.js` ; les commentaires de configuration sont en anglais.
 
 ### Installation
 
 1. Utiliser un FXServer à jour avec **OneSync activé**.
-2. Télécharger **`standalone_gearbox-0.3.1.zip`** depuis la [release v0.3.1](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.1).
+2. Télécharger **`standalone_gearbox-0.3.2.zip`** depuis la [release v0.3.2](https://github.com/DailyMok/FiveM-Gearbox/releases/tag/v0.3.2).
 3. Extraire le dossier **`standalone_gearbox`**, prêt à installer. Si vous utilisez plutôt **Code → Download ZIP**, renommer `FiveM-Gearbox-main` en `standalone_gearbox`.
 4. Le placer dans `resources/[standalone]/standalone_gearbox`. Le fichier `fxmanifest.lua` doit se trouver directement dans ce dossier.
 5. Ajouter dans `server.cfg` :
@@ -143,7 +145,7 @@ Aucune installation npm, compilation, importation SQL ou connexion à un service
 
 | Fichier | Réglages |
 |---|---|
-| [`config.js`](config.js) | Langue, HUD, véhicules concernés, mode par défaut, changement de mode, touches par défaut et son facultatif |
+| [`config.js`](config.js) | Langue, HUD, véhicules concernés, mode par défaut, changement de mode, touches clavier/périphériques par défaut et son facultatif |
 | [`vehicle-profiles.js`](vehicle-profiles.js) | Exceptions facultatives par hash ou nom de spawn |
 | [`server/permissions.js`](server/permissions.js) | Qui peut changer de mode : tous, identifiants, ACE ou métiers |
 
@@ -161,11 +163,11 @@ Le [guide administrateur](docs/ADMIN-CONFIG.md) fournit les exemples et le [guid
 | Monter un rapport en Séquentielle | Page Up |
 | Descendre un rapport en Séquentielle | Page Down |
 
-Les trois actions apparaissent dans **Paramètres → Raccourcis clavier → FiveM**. Chaque joueur peut les modifier indépendamment. Un changement des touches par défaut côté serveur ne remplace pas les préférences déjà sauvegardées.
+Les trois actions clavier et les trois lignes **Volant / manette :** (libres par défaut) apparaissent dans **Paramètres → Raccourcis clavier → FiveM**. Chaque joueur peut les modifier indépendamment. Un changement des touches par défaut côté serveur ne remplace pas les préférences déjà sauvegardées. Voir le [guide des périphériques](docs/INPUT-DEVICES.md#français--affecter-vos-palettes-ou-boutons) et le [guide N / R](docs/MANUAL-NEUTRAL-REVERSE.md).
 
 Commandes : `/sgbox auto`, `/sgbox seq`, `/sgbox toggle`, `/sgbox up`, `/sgbox down` et `/sgbox info`. Le nom de la commande est configurable.
 
-Le changement de mode normal par un joueur nécessite un **véhicule réseau**, afin que le serveur puisse autoriser la demande. Ces commandes ne permettent pas de changer le mode d'un véhicule local. La version 0.3.1 ignore la lecture de l'identifiant réseau de ces véhicules pour éviter les avertissements répétés d'objet réseau absent. Voir le [guide d'intégration](docs/INTEGRATION.md) pour les outils de création de véhicules.
+Le changement de mode normal par un joueur nécessite un **véhicule réseau**, afin que le serveur puisse autoriser la demande. Ces commandes ne permettent pas de changer le mode d'un véhicule local. Voir le [guide d'intégration](docs/INTEGRATION.md) pour les outils de création de véhicules.
 
 Un véhicule conserve son mode lors d'un changement de conducteur. Ce mode est réinitialisé lorsque l'entité est supprimée ou que la ressource redémarre ; il n'est pas sauvegardé par plaque.
 
@@ -175,8 +177,8 @@ Mettre `hud: false` masque le HUD intégré. L'export client et l'événement lo
 
 ```js
 const state = exports['standalone_gearbox'].getHudState();
-// state.gear: logical gear, 'R', or null
-// state.displayGear: display-ready gear, 'D', 'R', or null
+// state.gear: logical gear, 'N', 'R', or null
+// state.displayGear: display-ready gear, 'D', 'N', 'R', or null
 // state.mode: 'auto', 'seq', or null
 ```
 
@@ -196,7 +198,7 @@ Aucun enregistrement de passage de rapport n'est fourni. Les sons de passage fac
 
 Éviter de faire fonctionner plusieurs contrôleurs de boîte ou de comportement sur un même véhicule. Utiliser les exclusions par modèle, `conflictingResources` ou l'[API d'intégration](docs/INTEGRATION.md).
 
-La version 0.3.1 a passé **287 tests automatiques avec des natives FiveM simulées**, dont le test de régression des véhicules locaux. Les vérifications du HUD en navigateur à trois résolutions datent de la version 0.3.0 ; le HUD est inchangé dans ce correctif. Le changement Auto/Séquentielle après correction reste à confirmer en jeu et aucun nouvel essai d'intégration ESX/QBCore réelle n'a été effectué. Un signalement distinct de blocage d'une action dans le menu natif de réaffectation FiveM reste non résolu ; ce correctif ne le traite pas. Suivre la [fiche de validation en jeu](docs/VALIDATION.md) sur votre serveur avant la mise en service.
+La version 0.3.2 a passé **342 tests automatiques avec des natives FiveM simulées**, incluant la sélection séquentielle `N`/`R`, les affectations volant/manette et le test de régression des véhicules locaux. Suivre la [fiche de validation en jeu](docs/VALIDATION.md) sur votre serveur avant la mise en service.
 
 ### Licence
 

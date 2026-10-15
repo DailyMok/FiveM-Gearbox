@@ -29,6 +29,7 @@
     c.locale=admin.locale==='fr'?'fr':'en';
     c.command=typeof admin.command==='string'&&/^[a-z0-9_]+$/i.test(admin.command)?admin.command:'sgbox';
     c.upKey=admin.keys?.up||'PAGEUP';c.downKey=admin.keys?.down||'PAGEDOWN';c.toggleKey=admin.keys?.toggle||'M';
+    c.deviceKeys={mapper:admin.deviceKeys?.mapper??'JOYSTICK_BUTTON',up:admin.deviceKeys?.up??'',down:admin.deviceKeys?.down??'',toggle:admin.deviceKeys?.toggle??''};
     const percent=admin.shiftSounds?.volume;
     c.shiftFeedback={...physics.shiftFeedback,enabled:admin.shiftSounds?.enabled===true,volume:Number.isFinite(percent)?.3*Math.max(0,Math.min(100,percent))/100:0};
     c.trustedResources=Array.isArray(admin.trustedResources)?admin.trustedResources.filter(x=>typeof x==='string'&&x.length):[];
